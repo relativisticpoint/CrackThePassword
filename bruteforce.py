@@ -6,7 +6,8 @@ import string
 from itertools import product
 from time import time
 from numpy import loadtxt
-
+from multiprocessing import Process
+import multiprocessing as mp
 
 def product_loop(password, generator):
     for p in generator:
@@ -15,6 +16,24 @@ def product_loop(password, generator):
             return ''.join(p)
     return False
 
+def cherche(password,q):
+    print('1) Comparing with most common passwords / first names')
+    common_pass = loadtxt('probable-v2-top12000.txt', dtype=str)
+    common_names = loadtxt('middle-names.txt', dtype=str)
+    cp = [c for c in common_pass if c == password]
+    cn = [c for c in common_names if c == password]
+    cnl = [c.lower() for c in common_names if c.lower() == password]
+    
+
+    if len(cp) == 1:
+        print('\nPassword:', cp)
+        q.put(cp)
+    if len(cn) == 1:
+        print('\nPassword:', cn)
+        q.put(cn)
+    if len(cnl) == 1:
+        print('\nPassword:', cnl)
+        q.put(cnl)
 
 def bruteforce(password, max_nchar=8):
     """Password brute-force algorithm.
@@ -31,22 +50,7 @@ def bruteforce(password, max_nchar=8):
     bruteforce_password : string
         Brute-forced password
     """
-    print('1) Comparing with most common passwords / first names')
-    common_pass = loadtxt('probable-v2-top12000.txt', dtype=str)
-    common_names = loadtxt('middle-names.txt', dtype=str)
-    cp = [c for c in common_pass if c == password]
-    cn = [c for c in common_names if c == password]
-    cnl = [c.lower() for c in common_names if c.lower() == password]
-
-    if len(cp) == 1:
-        print('\nPassword:', cp)
-        return cp
-    if len(cn) == 1:
-        print('\nPassword:', cn)
-        return cn
-    if len(cnl) == 1:
-        print('\nPassword:', cnl)
-        return cnl
+    
     """
     # this find the 
     print('2) Digits cartesian product')
@@ -103,8 +107,22 @@ def bruteforce(password, max_nchar=8):
 
 # EXAMPLE
 
-# passw = str(input('type in the password you want to bruteforce : '))
-start = time()
-bruteforce('leopol',6) # changed the method now you have to specify the number of char that are contained in the passwrd pour aller plus vite
-end = time()
-print('Total time: %.2f seconds' % (end - start))
+# # passw = str(input('type in the password you want to bruteforce : '))
+# start = time()
+# bruteforce('leopol',6) # changed the method now you have to specify the number of char that are contained in the passwrd pour aller plus vite
+# end = time()
+# print('Total time: %.2f seconds' % (end - start))
+if __name__ == '__main__':
+    password = 'leo'
+    max_char=3
+    q = mp.Queue()
+
+    start = time()
+    # p= Process(target=bruteforce,args=(password,max_char))
+    # p.start()
+    # p.join()
+    p=Process(target=cherche,args=(password,q))
+    p.start()
+    p.join()
+    print("mdp dans ce qui suit")
+    print(q.get())
