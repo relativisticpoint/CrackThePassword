@@ -9,6 +9,7 @@ from numpy import loadtxt
 from multiprocessing import Process
 import multiprocessing as mp
 
+
 def product_loop(password, generator):
     for p in generator:
         if ''.join(p) == password:
@@ -17,13 +18,12 @@ def product_loop(password, generator):
     return False
 
 def cherche(password,q):
-    print('1) Comparing with most common passwords / first names')
+    print("1ere etape : comparaison avec les mdp les plus communs")
     common_pass = loadtxt('probable-v2-top12000.txt', dtype=str)
     common_names = loadtxt('middle-names.txt', dtype=str)
     cp = [c for c in common_pass if c == password]
     cn = [c for c in common_names if c == password]
     cnl = [c.lower() for c in common_names if c.lower() == password]
-    
 
     if len(cp) == 1:
         print('\nPassword:', cp)
@@ -34,6 +34,21 @@ def cherche(password,q):
     if len(cnl) == 1:
         print('\nPassword:', cnl)
         q.put(cnl)
+    q.put('end')
+
+def cherche2(password,q,max_char):
+    if q.get()== 'end':
+        print("le process de recherche 2 est lance")
+        generator = product(string.ascii_lowercase,repeat=int(max_char))
+        p = product_loop(password,generator)
+        if p is not False:
+            q.put(p)
+
+    
+    
+    
+        
+    
 
 def bruteforce(password, max_nchar=8):
     """Password brute-force algorithm.
@@ -70,9 +85,7 @@ def bruteforce(password, max_nchar=8):
         return p
 
     print(' 2bis) ASCII lowercase')
-    # relativisticpoint:the pb with this method is that it tries to find the pswd using all the 
-    # combinations i think we could significantly reduce the time by precising 
-    # the number of characters we re gonna use
+   
     for l in range(1, max_nchar + 1):
         print("\t..%d char" % l)
         generator = product(string.ascii_lowercase,
@@ -113,16 +126,22 @@ def bruteforce(password, max_nchar=8):
 # end = time()
 # print('Total time: %.2f seconds' % (end - start))
 if __name__ == '__main__':
-    password = 'leo'
-    max_char=3
+    password = 'zbiopy'
+    max_char=6
     q = mp.Queue()
-
+    q.put('end')
     start = time()
     # p= Process(target=bruteforce,args=(password,max_char))
     # p.start()
     # p.join()
     p=Process(target=cherche,args=(password,q))
+    p1=Process(target=cherche2,args=(password,q,max_char))
     p.start()
+    p1.start()
     p.join()
-    print("mdp dans ce qui suit")
-    print(q.get())
+    p1.join()
+    print("mdp dans ce qui suit",q.get())
+    end = time()
+    print('Total time: %.2f seconds' % (end - start))
+
+    
