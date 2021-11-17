@@ -1,5 +1,5 @@
 """
- @RaphaelVallat a tt fait moi j ai juste bidouille
+ 
 """
 import numpy
 import string
@@ -126,8 +126,8 @@ def bruteforce(password, max_nchar=8):
 # end = time()
 # print('Total time: %.2f seconds' % (end - start))
 if __name__ == '__main__':
-    password = 'zbiopy'
-    max_char=6
+    password = 'dkj'
+    max_char=3
     q = mp.Queue()
     q.put('end')
     start = time()
