@@ -3,7 +3,7 @@ This is a fun python/golang multi-threaded program to simulate a password cracki
 # The Python code :
 to run the python code open a terminal on the folder and execute the folloxing command :
 ```
-python2 bruteforce.py <the_password_you_want_to_crack>
+$ python2 bruteforce.py <the_password_you_want_to_crack>
 ```
 We use a python2 interpreter because it runs exception-free, the script works with python3 as well but calls some annoyhing exceptions from the multithreading module (this is probably due to a change of support from python2 to python3 that hasn't been updated on the multithreading library..).
 
