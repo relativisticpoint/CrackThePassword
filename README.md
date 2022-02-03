@@ -12,5 +12,6 @@ The program will first look into a list of common passwords and a list of common
 Note That: in this first version of the program, the password you pass as an argument must be lowercase and must not contain numbers nor special caracters, this will come with the following versions.
 
 The main aim of this mini-project is to get an understanding of how complex bruteforce may get when you start dealing with longer passwords, you can try out several combinations, and you'll remark upon the fact that the longer your password gets the more time it takes for the program to crack, untill you reach a certain lenght that would make it basically impossible to bruteforce (technically it's still possible but you would have to let the program run for days/weeks/years ).
+
 Have Fun !
 
